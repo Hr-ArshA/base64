@@ -9,6 +9,29 @@
     box-sizing: border-box;
 }
 
+
+@font-face {
+  font-family: Vazir Code;
+  src: url('../font/Vazir-Code.eot');
+  src: url('../font/Vazir-Code.eot?#iefix') format('embedded-opentype'),
+       url('../font/Vazir-Code.woff') format('woff'),
+       url('../font/Vazir-Code.ttf') format('truetype');
+  font-weight: normal;
+}
+
+@font-face {
+  font-family: Vazir Code Hack;
+  src: url('../font/Vazir-Code-Hack.eot');
+  src: url('../font/Vazir-Code-Hack.eot?#iefix') format('embedded-opentype'),
+       url('../font/Vazir-Code-Hack.woff') format('woff'),
+       url('../font/Vazir-Code-Hack.ttf') format('truetype');
+  font-weight: normal;
+}
+
+pre, code {
+  font-family: 'Vazir Code', 'Vazir Code Hack', monospaced;
+}
+
 :root {
     /* Hacker Color Palette */
     --primary-green: #00ff41;
@@ -76,8 +99,8 @@
     --radius-pill: 25px;
     
     /* Typography */
-    --font-family: 'Courier New', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-    --font-family-display: 'Orbitron', 'Courier New', monospace;
+    --font-family: 'Vazir Code', 'Courier New', 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    --font-family-display: 'Vazir Code', 'Orbitron', 'Courier New', monospace;
     --font-size-xs: 0.8em;
     --font-size-sm: 0.9em;
     --font-size-md: 1em;

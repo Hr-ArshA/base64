@@ -1,96 +1,92 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Decrypt Text - Text Encryption Tool</title>
+    <title>رمزگذاری متن - ابزار رمزگذاری متن</title>
         <link rel="stylesheet" href="css/style-hack.css">
 
 </head>
 <body>
     <div class="container" style="margin-top: 2rem">
-        <h1>🔓 Decrypt Text</h1>
+        <h1>🔒 رمزگذاری متن</h1>
         
         <div class="nav-buttons">
-            <a href="index.html" class="nav-btn" onclick="goHome()">🏠 Home</a>
-            <a href="encrypt.html" class="nav-btn" onclick="goToEncrypt()">🔒 Encrypt Page</a>
+            <a href="index.html" class="nav-btn" onclick="goHome()">🏠 خانه</a>
+            <a href="decrypt.html" class="nav-btn" onclick="goToDecrypt()">🔓 صفحه رمزگشایی</a>
         </div>
 
         <div class="input-section">
             <div class="section-title">
-                <span>🔐</span>
-                <span>Enter Encrypted Text (Base64)</span>
+                <span>📝</span>
+                <span>متن ساده را وارد کنید</span>
             </div>
-            <textarea id="encryptedText" placeholder="Paste your Base64 encoded text here to decrypt..."></textarea>
+            <textarea id="plainText" placeholder="متن خود را برای رمزگذاری اینجا وارد کنید..."></textarea>
             <div class="button-group">
-                <button class="action-btn" onclick="decryptText()">🔓 Decrypt</button>
-                <button class="action-btn clear-btn" onclick="clearInput()">🗑️ Clear</button>
+                <button class="action-btn" onclick="encryptText()">🔒 رمزگذاری</button>
+                <button class="action-btn clear-btn" onclick="clearInput()">🗑️ پاک کردن</button>
             </div>
         </div>
 
         <div class="output-section">
             <div class="section-title">
-                <span>📝</span>
-                <span>Decrypted Text</span>
+                <span>🔐</span>
+                <span>متن رمزگذاری شده (Base64)</span>
             </div>
-            <div id="decryptedText" class="result-box">Decrypted text will appear here...</div>
+            <div id="encryptedText" class="result-box">متن رمزگذاری شده اینجا ظاهر خواهد شد...</div>
             <div class="button-group">
-                <button class="action-btn copy-btn" onclick="copyDecrypted()">📋 Copy Decrypted Text</button>
+                <button class="action-btn copy-btn" onclick="copyEncrypted()">📋 کپی متن رمزگذاری شده</button>
             </div>
             <div id="successMessage" class="success-message"></div>
-            <div id="errorMessage" class="error-message"></div>
         </div>
     </div>
 
     <script>
-        function decryptText() {
-            const encryptedText = document.getElementById('encryptedText').value;
-            const decryptedTextDiv = document.getElementById('decryptedText');
+        function encryptText() {
+            const plainText = document.getElementById('plainText').value;
+            const encryptedTextDiv = document.getElementById('encryptedText');
             
-            if (!encryptedText.trim()) {
-                showError('Please enter some encrypted text to decrypt.');
+            if (!plainText.trim()) {
+                // alert('لطفاً متنی برای رمزگذاری وارد کنید.');
                 return;
             }
             
             try {
-                const decoded = decodeURIComponent(escape(atob(encryptedText.trim())));
-                decryptedTextDiv.textContent = decoded;
-                showSuccess('Text decrypted successfully!');
-                hideError();
+                const encoded = btoa(unescape(encodeURIComponent(plainText)));
+                encryptedTextDiv.textContent = encoded;
+                showSuccess('متن با موفقیت رمزگذاری شد!');
             } catch (error) {
-                decryptedTextDiv.textContent = 'Error: Invalid Base64 format or corrupted data';
-                showError('Failed to decrypt text. Please check that you\'ve entered valid Base64 encoded text.');
-                console.error('Decryption error:', error);
+                encryptedTextDiv.textContent = 'خطا: قادر به رمزگذاری متن نیست';
+                console.error('Encryption error:', error);
             }
         }
 
-        function copyDecrypted() {
-            const decryptedText = document.getElementById('decryptedText').textContent;
+        function copyEncrypted() {
+            const encryptedText = document.getElementById('encryptedText').textContent;
             
-            if (decryptedText === 'Decrypted text will appear here...' || decryptedText.startsWith('Error:')) {
-                // alert('No decrypted text to copy. Please decrypt some text first.');
+            if (encryptedText === 'متن رمزگذاری شده اینجا ظاهر خواهد شد...' || encryptedText.startsWith('خطا:')) {
+                // alert('متن رمزگذاری شده‌ای برای کپی وجود ندارد. لطفاً ابتدا متنی را رمزگذاری کنید.');
                 return;
             }
             
-            navigator.clipboard.writeText(decryptedText).then(() => {
-                showSuccess('Decrypted text copied to clipboard!');
+            navigator.clipboard.writeText(encryptedText).then(() => {
+                showSuccess('متن رمزگذاری شده در کلیپ‌بورد کپی شد!');
             }).catch(() => {
                 // Fallback for older browsers
                 const textArea = document.createElement('textarea');
-                textArea.value = decryptedText;
+                textArea.value = encryptedText;
                 document.body.appendChild(textArea);
                 textArea.select();
                 document.execCommand('copy');
                 document.body.removeChild(textArea);
-                showSuccess('Decrypted text copied to clipboard!');
+                showSuccess('متن رمزگذاری شده در کلیپ‌بورد کپی شد!');
             });
         }
 
         function clearInput() {
-            document.getElementById('encryptedText').value = '';
-            document.getElementById('decryptedText').textContent = 'Decrypted text will appear here...';
+            document.getElementById('plainText').value = '';
+            document.getElementById('encryptedText').textContent = 'متن رمزگذاری شده اینجا ظاهر خواهد شد...';
             hideSuccess();
-            hideError();
         }
 
         function showSuccess(message) {
@@ -106,33 +102,20 @@
             document.getElementById('successMessage').style.display = 'none';
         }
 
-        function showError(message) {
-            const errorDiv = document.getElementById('errorMessage');
-            errorDiv.textContent = message;
-            errorDiv.style.display = 'block';
-            setTimeout(() => {
-                hideError();
-            }, 5000);
-        }
-
-        function hideError() {
-            document.getElementById('errorMessage').style.display = 'none';
-        }
-
         function goHome() {
             // In a real implementation, this would navigate to index.html
             // alert('Navigate to index.html to go to the home page');
         }
 
-        function goToEncrypt() {
-            // In a real implementation, this would navigate to encrypt.html
-            // alert('Navigate to encrypt.html to go to the encrypt page');
+        function goToDecrypt() {
+            // In a real implementation, this would navigate to decrypt.html
+            // alert('Navigate to decrypt.html to go to the decrypt page');
         }
 
-        // Allow Enter key to trigger decryption
-        document.getElementById('encryptedText').addEventListener('keydown', function(event) {
+        // Allow Enter key to trigger encryption
+        document.getElementById('plainText').addEventListener('keydown', function(event) {
             if (event.ctrlKey && event.key === 'Enter') {
-                decryptText();
+                encryptText();
             }
         });
     </script>
