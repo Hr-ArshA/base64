@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encrypt Text - Text Encryption Tool</title>
+        <link rel="stylesheet" href="css/style-hack.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>🔒 Encrypt Text</h1>
+        
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-btn" onclick="goHome()">🏠 Home</a>
+            <a href="decrypt.html" class="nav-btn" onclick="goToDecrypt()">🔓 Decrypt Page</a>
+        </div>
+
+        <div class="input-section">
+            <div class="section-title">
+                <span>📝</span>
+                <span>Enter Plain Text</span>
+            </div>
+            <textarea id="plainText" placeholder="Enter your text here to encrypt..."></textarea>
+            <div class="button-group">
+                <button class="action-btn" onclick="encryptText()">🔒 Encrypt</button>
+                <button class="action-btn clear-btn" onclick="clearInput()">🗑️ Clear</button>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <div class="section-title">
+                <span>🔐</span>
+                <span>Encrypted Text (Base64)</span>
+            </div>
+            <div id="encryptedText" class="result-box">Encrypted text will appear here...</div>
+            <div class="button-group">
+                <button class="action-btn copy-btn" onclick="copyEncrypted()">📋 Copy Encrypted Text</button>
+            </div>
+            <div id="successMessage" class="success-message"></div>
+        </div>
+    </div>
+
+    <script>
+        function encryptText() {
+            const plainText = document.getElementById('plainText').value;
+            const encryptedTextDiv = document.getElementById('encryptedText');
+            
+            if (!plainText.trim()) {
+                // alert('Please enter some text to encrypt.');
+                return;
+            }
+            
+            try {
+                const encoded = btoa(unescape(encodeURIComponent(plainText)));
+                encryptedTextDiv.textContent = encoded;
+                showSuccess('Text encrypted successfully!');
+            } catch (error) {
+                encryptedTextDiv.textContent = 'Error: Unable to encrypt text';
+                console.error('Encryption error:', error);
+            }
+        }
+
+        function copyEncrypted() {
+            const encryptedText = document.getElementById('encryptedText').textContent;
+            
+            if (encryptedText === 'Encrypted text will appear here...' || encryptedText.startsWith('Error:')) {
+                // alert('No encrypted text to copy. Please encrypt some text first.');
+                return;
+            }
+            
+            navigator.clipboard.writeText(encryptedText).then(() => {
+                showSuccess('Encrypted text copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = encryptedText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showSuccess('Encrypted text copied to clipboard!');
+            });
+        }
+
+        function clearInput() {
+            document.getElementById('plainText').value = '';
+            document.getElementById('encryptedText').textContent = 'Encrypted text will appear here...';
+            hideSuccess();
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                hideSuccess();
+            }, 3000);
+        }
+
+        function hideSuccess() {
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function goHome() {
+            // In a real implementation, this would navigate to index.html
+            // alert('Navigate to index.html to go to the home page');
+        }
+
+        function goToDecrypt() {
+            // In a real implementation, this would navigate to decrypt.html
+            // alert('Navigate to decrypt.html to go to the decrypt page');
+        }
+
+        // Allow Enter key to trigger encryption
+        document.getElementById('plainText').addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                encryptText();
+            }
+        });
+    </script>
+</body>
+</html>

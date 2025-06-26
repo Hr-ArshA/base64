@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Decrypt Text - Text Encryption Tool</title>
+        <link rel="stylesheet" href="css/style-hack.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>🔓 Decrypt Text</h1>
+        
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-btn" onclick="goHome()">🏠 Home</a>
+            <a href="encrypt.html" class="nav-btn" onclick="goToEncrypt()">🔒 Encrypt Page</a>
+        </div>
+
+        <div class="input-section">
+            <div class="section-title">
+                <span>🔐</span>
+                <span>Enter Encrypted Text (Base64)</span>
+            </div>
+            <textarea id="encryptedText" placeholder="Paste your Base64 encoded text here to decrypt..."></textarea>
+            <div class="button-group">
+                <button class="action-btn" onclick="decryptText()">🔓 Decrypt</button>
+                <button class="action-btn clear-btn" onclick="clearInput()">🗑️ Clear</button>
+            </div>
+        </div>
+
+        <div class="output-section">
+            <div class="section-title">
+                <span>📝</span>
+                <span>Decrypted Text</span>
+            </div>
+            <div id="decryptedText" class="result-box">Decrypted text will appear here...</div>
+            <div class="button-group">
+                <button class="action-btn copy-btn" onclick="copyDecrypted()">📋 Copy Decrypted Text</button>
+            </div>
+            <div id="successMessage" class="success-message"></div>
+            <div id="errorMessage" class="error-message"></div>
+        </div>
+    </div>
+
+    <script>
+        function decryptText() {
+            const encryptedText = document.getElementById('encryptedText').value;
+            const decryptedTextDiv = document.getElementById('decryptedText');
+            
+            if (!encryptedText.trim()) {
+                showError('Please enter some encrypted text to decrypt.');
+                return;
+            }
+            
+            try {
+                const decoded = decodeURIComponent(escape(atob(encryptedText.trim())));
+                decryptedTextDiv.textContent = decoded;
+                showSuccess('Text decrypted successfully!');
+                hideError();
+            } catch (error) {
+                decryptedTextDiv.textContent = 'Error: Invalid Base64 format or corrupted data';
+                showError('Failed to decrypt text. Please check that you\'ve entered valid Base64 encoded text.');
+                console.error('Decryption error:', error);
+            }
+        }
+
+        function copyDecrypted() {
+            const decryptedText = document.getElementById('decryptedText').textContent;
+            
+            if (decryptedText === 'Decrypted text will appear here...' || decryptedText.startsWith('Error:')) {
+                // alert('No decrypted text to copy. Please decrypt some text first.');
+                return;
+            }
+            
+            navigator.clipboard.writeText(decryptedText).then(() => {
+                showSuccess('Decrypted text copied to clipboard!');
+            }).catch(() => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = decryptedText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showSuccess('Decrypted text copied to clipboard!');
+            });
+        }
+
+        function clearInput() {
+            document.getElementById('encryptedText').value = '';
+            document.getElementById('decryptedText').textContent = 'Decrypted text will appear here...';
+            hideSuccess();
+            hideError();
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                hideSuccess();
+            }, 3000);
+        }
+
+        function hideSuccess() {
+            document.getElementById('successMessage').style.display = 'none';
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                hideError();
+            }, 5000);
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+
+        function goHome() {
+            // In a real implementation, this would navigate to index.html
+            // alert('Navigate to index.html to go to the home page');
+        }
+
+        function goToEncrypt() {
+            // In a real implementation, this would navigate to encrypt.html
+            // alert('Navigate to encrypt.html to go to the encrypt page');
+        }
+
+        // Allow Enter key to trigger decryption
+        document.getElementById('encryptedText').addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                decryptText();
+            }
+        });
+    </script>
+</body>
+</html>
